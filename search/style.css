@@ -1,0 +1,95 @@
+/* Classes */
+/* Objects */
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #202124;
+    text-align: center;
+  }
+
+  form {
+    margin: 150px;
+  }
+
+  h1 {
+    font-size: 3em;
+    color: blue;
+  }
+  
+  /* Google logo container */
+  #logo {
+    margin: 50px auto 20px;
+    width: auto;
+    height: auto;
+  }
+  
+  /* Search bar styling */
+  .search-bar {
+    display: inline-block;
+    width: 50%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #dfe1e5;
+    border-radius: 24px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .search-bar:focus {
+    box-shadow: 0px 1px 10px rgba(66, 133, 244, 0.4);
+    border-color: #4285f4;
+  }
+  
+  /* Search buttons styling */
+  .button-container {
+    margin-top: 20px;
+  }
+  
+  .button {
+    display: inline-block;
+    font-size: 14px;
+    padding: 10px 20px;
+    margin: 5px;
+    color: #202124;
+    background-color: #f8f9fa;
+    border: 1px solid #dfe1e5;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #f1f3f4;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Footer styling */
+  .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #f2f2f2;
+    color: #70757a;
+    padding: 10px 0;
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid #dadce0;
+  }
+  
+  .footer a {
+    color: #1a73e8;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  
