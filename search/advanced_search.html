@@ -7,15 +7,34 @@
         <title>index</title>
     </head>
     <body>
-        <div class="links">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-            </ul>
+
+            <div class="links">
+                <a href="index.html">Home</a>
+            </div>
+            <div class="main-container">
+            <form action="https://www.google.com/search">
+                <h1 id="logo">Google Advanced Search</h1>
+                <div class="form-container">
+
+                    <label for="all">all these words:</label>
+                    <input name="all">
+
+
+                    <label for="exact">this exact word or phrase:</label>
+                    <input name="exact">
+
+
+                    <label for="any">any of these words:</label>
+                    <input name="any">
+
+
+                    <label for="none">none of these words:</label>
+                    <input name="none"> 
+
+                    <input class="button" type="submit" value="Advanced Search">
+
+                </div>
+            </form>
         </div>
-        <form action="https://www.google.com/search">
-            <h1 id="logo">Search</h1>
-            <input class="search-bar" type="text" name="q" placeholder="Search Google or type a URL">
-            <input class="button" type="submit" value="Google Search">
-        </form>
     </body>
 </html>
