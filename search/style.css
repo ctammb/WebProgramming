@@ -94,7 +94,14 @@ body {
   }
 
   .links {
+    width: 10%;
+    padding: 10px;
+    margin: 10px;
+    float: right;
+    text-align: left;
+  }
+
+  .main-container {
     width: 100%;
-    text-align: right;
   }
   
