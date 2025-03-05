@@ -8,26 +8,44 @@ body {
     padding: 0;
     background-color: #ffffff;
     color: #202124;
-    display: flex;
-    flex-direction: column;
   }
-
+  
   h1 {
     font-size: 3em;
     color: blue;
     text-align: center;
   }
+
+  .links {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+  }
+  
+  .links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 60vh;
+  }
+
   
   /* Google logo container */
   #logo {
-    margin: 50px auto 20px;
+    margin: auto;
     width: auto;
     height: auto;
   }
   
   /* Search bar styling */
   .search-bar {
-    display: inline-block;
     width: 100%;
     max-width: 700px;
     margin: 20px auto;
@@ -51,7 +69,6 @@ body {
   }
   
   .button {
-    display: block;
     font-size: 14px;
     padding: 10px 20px;
     margin: 5px auto 5px auto;
@@ -66,6 +83,11 @@ body {
   .button:hover {
     background-color: #f1f3f4;
     box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  #advanced_button {
+    color: white;
+    background-color: blue;
   }
   
   /* Footer styling */
@@ -93,20 +115,12 @@ body {
 
   .form-container {
     display: grid;
-    grid-template-columns: 200px 400px;
+    grid-template-columns: 200px auto;
     gap: 10px;
     padding: 20px;
-    border: 1px solid #ccc;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    max-width 700px;
+    max-width: 700px;
     width: 100%;
     box-sizing: border-box; /* Includes padding in width */
-  }
-
-  .form-container h1 {
-    grid-column: span 2; /* Make the title span the full width */
-    text-align: center;
   }
   
   .form-container input {
@@ -137,24 +151,6 @@ body {
     box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .links {
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px 20px;
-    background: #f8f9fa;
-  }
-  
-  .links a {
-    margin-left: 15px;
-    text-decoration: none;
-    color: #007bff;
-  }
 
-  .main-container {
-    flex: 1; /* Take the remaining height */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    background: #f0f0f0; /* Optional background for contrast */
-  }
+
   

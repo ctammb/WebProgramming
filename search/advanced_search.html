@@ -9,29 +9,32 @@
     <body>
 
             <div class="links">
-                <a href="index.html">Home</a>
+                <a href="index.html">Google Search</a>
             </div>
             <div class="main-container">
             <form action="https://www.google.com/search">
                 <h1 id="logo">Google Advanced Search</h1>
+                <div>Find pages with...</div>
+
+                <br>
                 <div class="form-container">
 
                     <label for="all">all these words:</label>
-                    <input name="all">
+                    <input value name="as_q" autofocus="autofocus" id="all">
 
 
                     <label for="exact">this exact word or phrase:</label>
-                    <input name="exact">
+                    <input name="as_epq" value autofocus="autofocus" id="exact">
 
 
                     <label for="any">any of these words:</label>
-                    <input name="any">
+                    <input name="as_oq" value autofocus="autofocus" id="any">
 
 
                     <label for="none">none of these words:</label>
-                    <input name="none"> 
+                    <input name="as_eq" value autofocus="autofocus" id="none"> 
 
-                    <input class="button" type="submit" value="Advanced Search">
+                    <input class="button" id="advanced_button" type="submit" value="Advanced Search">
 
                 </div>
             </form>
