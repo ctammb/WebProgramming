@@ -5,12 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{title}}</h1>
+<h1>{{ title }}</h1>
+<br> 
+<div>
+  {{ content|safe }}
+</div>
+<br> 
+<a href="{% url 'index' %}">Back to index</a>
 
-    <ul>
-        {% for entry in entries %}
-            <li>{{ entry }}</li>
-        {% endfor %}
-    </ul>
 
 {% endblock %}

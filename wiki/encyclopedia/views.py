@@ -8,7 +8,14 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def entry(request):
+def entry(request, title):
+    content = util.get_entry(title)
+    if content is None:
+        return render(request, "encyclopedia/error.html", {
+            "message": f"Entry not found for '{title}'."
+        })
+    # Assuming util.entry_item() returns a dictionary with the entry content
     return render(request, "encyclopedia/entry.html", {
-        "entry_item": util.entry()
+        "title": title,
+        "content": content          
     })
