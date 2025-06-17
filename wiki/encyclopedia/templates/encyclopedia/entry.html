@@ -10,7 +10,10 @@
 <div>
   {{ content|safe }}
 </div>
-<br> 
+<br>
+<a href="{% url 'edit_entry' title %}" class="btn btn-secondary">Edit Entry</a>
+
+<br><br> 
 <a href="{% url 'index' %}">Back to index</a>
 
 
