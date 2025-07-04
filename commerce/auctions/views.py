@@ -8,6 +8,7 @@ from .forms import ListingForm
 from django.contrib.auth.decorators import login_required
 from .models import User
 
+# testing push to GitHub
 
 def index(request):
     return render(request, "auctions/index.html")
