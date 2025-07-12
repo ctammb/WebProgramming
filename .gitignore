@@ -6,6 +6,10 @@ __pycache__/
 env/
 venv/
 
+.winvenv/
+winvenv/
+
+
 node_modules/
 
 .vscode/

@@ -1,17 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .forms import ListingForm
+from .forms import ListingForm, BidForm
 from django.contrib.auth.decorators import login_required
-from .models import User
+from .models import User, Listing, Bid 
 
-# testing push to GitHub
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {"listings": listings})
 
 def create(request):
     if not request.user.is_authenticated:
@@ -34,18 +34,59 @@ def create(request):
             except Exception as e:
                 print(f"Error saving listing: {e}")
             return HttpResponseRedirect(reverse("index"))
+        else:
+            print("Form is invalid")
+            form = ListingForm()
+            return render(request, "auctions/create.html", {
+            "form": form})
 
     else:
         form = ListingForm()
-
         return render(request, "auctions/create.html", {
             "form": form})
 
 def listing(request, listing_id):
-    # Placeholder for listing view logic
+
+    listing = get_object_or_404(Listing, pk=listing_id)
+
+    if not request.user.is_authenticated:
+            return HttpResponse("You must be logged in to view listing and place a bid.")
+    
+    if request.method == "POST":
+
+        form = BidForm(request.POST)
+        if form.is_valid():
+            bid = form.save(commit=False)
+            bid.bidder = request.user
+            bid.listing = listing
+
+            highest_bid = listing.bids.order_by('amount').first()
+
+            min_bid = highest_bid.amount if highest_bid else listing.starting_bid
+
+            if bid.amount <= min_bid:
+                form.add_error('amount', f'Bid must be greater than the current price (${min_bid})')
+            else:
+                bid.save()
+                print("Bid saved successfully")
+
+        else:
+            print("Form is invalid")
+    
+    form = BidForm()
+    highest_bid = listing.highest_bid
+    user_is_highest_bidder = (
+        request.user.is_authenticated and
+        highest_bid and
+        highest_bid.bidder == request.user
+    )
+
     return render(request, "auctions/listing.html", {
-        "listing_id": listing_id
+        "listing": listing,
+        "form": form,
+        "user_is_highest_bidder": user_is_highest_bidder
     })
+
 
 def watchlist(request):
     # Placeholder for watchlist view logic

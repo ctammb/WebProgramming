@@ -1,3 +1,22 @@
 body {
     padding: 10px;
 }
+
+.listing-content {
+    background-color: lightyellow;
+    display: flex;
+    align-items:flex-start;
+    margin: 20px;
+    padding: 20px;
+    border: 2px solid black;
+    max-width:fit-content;
+}
+
+.listing-image {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.listing-text {
+    max-width: 400px;
+}

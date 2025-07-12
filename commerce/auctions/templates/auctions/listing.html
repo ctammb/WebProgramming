@@ -1,7 +1,38 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listing</h2>
+    <h2><h3>Listing: {{ listing.title }}</h3></h2>
 
-    TODO
+        {% load static %}    
+
+        <div class="listing">
+            <div class="listing-single">
+                <br>
+                <div class="listing-image">
+                    <img src="{% static listing.image_url %}" alt="Listing Image"
+                        style="max-width: 300px; max-height: 300px;">
+                </div>
+                <br>
+                <div class="listing-text">
+                    <p>{{ listing.description }}</p>
+                    <p>Current Price: ${{ listing.current_price }}</p>
+                    <hr>
+                    <p>Total bids: {{ listing.number_of_bids }}</p>
+                    {% if user_is_highest_bidder %}
+                        <p style="color: green;">You currently have the highest bid!</p>
+                    {% endif %}
+
+                    <h4>Place a Bid</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.amount.label_tag }} {{ form.amount }}
+                        <button type="submit">Submit Bid</button>
+                    </form>
+
+                    <a href="{% url 'index' %}">Back</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
 {% endblock %}

@@ -3,5 +3,28 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+        {% load static %}    
+        {% for listing in listings %}
+
+        <div class="listing">
+            <div class="listing-content">
+                <div class="listing-image">
+                    <img src="{% static listing.image_url %}" alt="Listing Image"
+                        style="max-width: 300px; max-height: 300px;">
+                </div>
+                <div class="listing-text">
+                    <ul>
+                    <li><h3>{{ listing.title }}</h3></li>
+                    <li>{{ listing.description }}</li>
+                    <li>Current Price: ${{ listing.current_price }}</li>
+                    <li>Created: {{ listing.created_at}}</li>
+                    <a href="{% url 'listing' listing.id %}">View Listing</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+  
+    {% empty %}
+        <p>No active listings available.</p>
+    {% endfor %}
 {% endblock %}

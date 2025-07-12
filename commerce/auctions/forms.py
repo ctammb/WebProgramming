@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing
+from .models import Listing, Bid
 
 class ListingForm(forms.ModelForm):
     class Meta:
@@ -7,5 +7,7 @@ class ListingForm(forms.ModelForm):
         fields = ['title', 'description', 'starting_bid', 'image_url', 'category']
 
 
-class BidForm(forms.Form):
-    amount = forms.DecimalField(label="Your Bid", max_digits=10, decimal_places=2)
+class BidForm(forms.ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['amount']
