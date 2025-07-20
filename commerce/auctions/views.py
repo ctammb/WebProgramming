@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from .forms import ListingForm, BidForm
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, Bid 
+from .models import User, Listing, Bid, Category
 
 
 def index(request):
@@ -93,8 +93,10 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html")
 
 def categories(request):
-    # Placeholder for categories view logic
-    return render(request, "auctions/categories.html")
+    categories = set(listing.category for listing in Listing.objects.all() if listing.category)
+    print("DEBUG CATEGORIES:", categories)
+
+    return render(request, "auctions/categories.html", {"categories":categories})
 
 def category(request, category_name):
     # Placeholder for category view logic

@@ -5,12 +5,18 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+class Category(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return self.name
+    
 class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
     image_url = models.CharField(max_length=100, blank=True, null=True)
-    category = models.CharField(max_length=64, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -61,11 +67,6 @@ class Meta:
     def __str__(self):
         return f"{self.user.username} watching {self.listing.title}"
 
-class Category(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-
-    def __str__(self):
-        return self.name
 
 class AuctionClosed(models.Model):
     listing = models.OneToOneField(Listing, on_delete=models.CASCADE, related_name="closed_auction")
