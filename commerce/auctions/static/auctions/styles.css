@@ -1,22 +1,45 @@
 body {
-    padding: 10px;
+    padding: 20px;
+    }
+
+.center-box {
+    width: auto;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
 .listing-content {
-    background-color: lightyellow;
-    display: flex;
+    background-color: #f0f0f0;
+    display: inline-flex;
     align-items:flex-start;
     margin: 20px;
-    padding: 20px;
     border: 2px solid black;
-    max-width:fit-content;
 }
 
 .listing-image {
     flex-shrink: 0;
-    margin-right: 20px;
+    margin: 20px;
 }
 
 .listing-text {
-    max-width: 400px;
+    padding: 20px;
+    flex: 1;
 }
+
+.listing-box {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.listing-image img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 4px;
+}
+
+

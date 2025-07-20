@@ -52,28 +52,28 @@ def listing(request, listing_id):
     if not request.user.is_authenticated:
             return HttpResponse("You must be logged in to view listing and place a bid.")
     
+    highest_bid = listing.highest_bid
+    min_bid = highest_bid.amount if highest_bid else listing.starting_bid
+
     if request.method == "POST":
 
-        form = BidForm(request.POST)
+        form = BidForm(request.POST, min_bid=min_bid)
         if form.is_valid():
+            print("Form is valid")
             bid = form.save(commit=False)
             bid.bidder = request.user
             bid.listing = listing
-
-            highest_bid = listing.bids.order_by('amount').first()
-
-            min_bid = highest_bid.amount if highest_bid else listing.starting_bid
 
             if bid.amount <= min_bid:
                 form.add_error('amount', f'Bid must be greater than the current price (${min_bid})')
             else:
                 bid.save()
                 print("Bid saved successfully")
+                return redirect('listing', listing_id=listing.id)
 
-        else:
-            print("Form is invalid")
+    else:
+        form = BidForm(min_bid=min_bid)
     
-    form = BidForm()
     highest_bid = listing.highest_bid
     user_is_highest_bidder = (
         request.user.is_authenticated and

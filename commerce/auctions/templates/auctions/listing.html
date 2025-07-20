@@ -1,38 +1,53 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2><h3>Listing: {{ listing.title }}</h3></h2>
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2>Listing: {{ listing.title }}</h2>
 
-        {% load static %}    
+        {% load static %}
+        {% load form_filters %}    
 
-        <div class="listing">
-            <div class="listing-single">
-                <br>
-                <div class="listing-image">
-                    <img src="{% static listing.image_url %}" alt="Listing Image"
-                        style="max-width: 300px; max-height: 300px;">
-                </div>
-                <br>
-                <div class="listing-text">
-                    <p>{{ listing.description }}</p>
-                    <p>Current Price: ${{ listing.current_price }}</p>
-                    <hr>
-                    <p>Total bids: {{ listing.number_of_bids }}</p>
-                    {% if user_is_highest_bidder %}
-                        <p style="color: green;">You currently have the highest bid!</p>
-                    {% endif %}
-
-                    <h4>Place a Bid</h4>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.amount.label_tag }} {{ form.amount }}
-                        <button type="submit">Submit Bid</button>
-                    </form>
-
-                    <a href="{% url 'index' %}">Back</a>
-                    </ul>
-                </div>
-            </div>
+        <div class="listing-image">
+            <img src="{% static listing.image_url %}" alt="Listing Image"
+                style="max-width: 300px; max-height: 300px; display: block; margin: 0 auto;">
         </div>
+
+        <div class="listing-text">
+            <p>{{ listing.description }}</p>
+            <p style="font-weight: bold;"">Current Price: ${{ listing.current_price }}</p>
+            <hr>
+            <p>Total bids: {{ listing.number_of_bids }}</p>
+            {% if user_is_highest_bidder %}
+                <p style="color: green;">You currently have the highest bid!</p>
+            {% endif %}
+
+            <h4>Place a Bid</h4>
+            <form method="post" action="{% url 'listing' listing.id %}">
+                {% csrf_token %}
+                <div class="form-row align-items-center mb-3" style="gap: 10px;">
+                    <label for="{{ form.amount.id_for_label }}" class="col-form-label me-2">
+                        {{ form.amount.label }}
+                    </label>
+                    <div>
+                        {{ form.amount|add_class:"form-control form-control-sm" }}
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-sm">Submit Bid</button>
+                    </div>
+                </div>
+
+                {% if form.amount.errors %}
+                    <div class="text-danger small mt-2">
+                        {{ form.amount.errors }}
+                    </div>
+                {% endif %}
+            </form>
+            <br>
+            <a href="{% url 'index' %}">Back</a>
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}
