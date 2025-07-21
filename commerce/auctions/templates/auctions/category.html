@@ -1,7 +1,30 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Edit/Add Category</h2>
+    <h2>Listings in Category: {{ category.name }}</h2>
 
-    TODO
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+
+        {% load static %}    
+        {% for listing in listings %}
+
+            <div class="listing-box">
+                <div class="listing-image">
+                    <img src="{% static listing.image_url %}" alt="Image for {{ listing.title }}">
+                </div>
+                <div class="listing-text">
+                    <h3>{{ listing.title }}</h3>
+                    <p>{{ listing.description }}</p>
+                    <p><strong>Current Price: ${{ listing.current_price }}</strong></p>
+                    <p style="font-size: smaller">Created: {{ listing.created_at}}</p>
+                    <a href="{% url 'listing' listing.id %}">View Listing</a>
+                </div>
+            </div>
+ 
+        {% empty %}
+            <p>No active listings available.</p>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

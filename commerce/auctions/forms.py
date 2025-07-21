@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing, Bid
+from .models import Listing, Bid, Category
 
 class ListingForm(forms.ModelForm):
     class Meta:
@@ -10,8 +10,13 @@ class ListingForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'starting_bid': forms.NumberInput(attrs={'class': 'form-control', 'min': '0.01', 'step': '0.01'}),
             'image_url': forms.TextInput(attrs={'class': 'form-control'}),
-            'category': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.all()
+        self.fields['category'].empty_label = "Select a Category"
+
 
 class BidForm(forms.ModelForm):
     class Meta:

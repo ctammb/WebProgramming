@@ -8,11 +8,11 @@
         {% load static %}    
 
         {% if categories %}
-        <ol>
+        <ull>
         {% for category in categories %}  
             <li><a href="{% url 'category' category.name %}">{{ category.name }}</a></li>
         {% endfor %}
-        </ol>
+        </ul>
 
         {% else %}
             <p>No defined categories available.</p>

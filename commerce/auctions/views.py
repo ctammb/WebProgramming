@@ -93,15 +93,15 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html")
 
 def categories(request):
-    categories = set(listing.category for listing in Listing.objects.all() if listing.category)
-    print("DEBUG CATEGORIES:", categories)
-
+    categories = Category.objects.all()
     return render(request, "auctions/categories.html", {"categories":categories})
 
-def category(request, category_name):
-    # Placeholder for category view logic
+def category(request, name):
+    category = get_object_or_404(Category, name=name)
+    listings = Listing.objects.filter(category=category)
     return render(request, "auctions/category.html", {
-        "category_name": category_name
+        "category": category,
+        "listings": listings
     })
 
 def close_listing(request, listing_id):
