@@ -1,7 +1,22 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Your Watchlist</h2>
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2>Your Watchlist Items</h2>
 
-    TODO
+        {% load static %}    
+
+        {% if listings %}
+        <ull>
+        {% for listing in listings%}  
+            <li><a href="{% url 'listing' listing.id %}">{{ listing.title }}</a></li>
+        {% endfor %}
+        </ul>
+
+        {% else %}
+            <p>No Watchlist items selected</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

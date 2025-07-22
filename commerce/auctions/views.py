@@ -6,13 +6,25 @@ from django.urls import reverse
 
 from .forms import ListingForm, BidForm
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, Bid, Category
+from .models import User, Listing, Bid, Category, Watchlist
+from django.contrib import messages
 
 
-def index(request):
-    listings = Listing.objects.all()
-    return render(request, "auctions/index.html", {"listings": listings})
+def active_listings(request):
+    listings = Listing.objects.filter(is_active=True)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "view_title": "Active Listings"
+        })
 
+def closed_listings(request):
+    listings = Listing.objects.filter(is_active=False)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+        "view_title": "Closed Listings"
+    })
+
+@login_required
 def create(request):
     if not request.user.is_authenticated:
             return HttpResponse("You must be logged in to create a listing.")
@@ -45,6 +57,7 @@ def create(request):
         return render(request, "auctions/create.html", {
             "form": form})
 
+@login_required
 def listing(request, listing_id):
 
     listing = get_object_or_404(Listing, pk=listing_id)
@@ -81,16 +94,98 @@ def listing(request, listing_id):
         highest_bid.bidder == request.user
     )
 
+    is_watching = False
+    if request.user.is_authenticated:
+        is_watching = Watchlist.objects.filter(user=request.user, listing=listing).exists()
+
+    is_owner = False
+    if request.user == listing.owner:
+        is_owner = True
+
+    winning_bid = listing.bids.order_by('-amount').first()
+
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "form": form,
-        "user_is_highest_bidder": user_is_highest_bidder
+        "user_is_highest_bidder": user_is_highest_bidder,
+        "is_watching": is_watching,
+        "is_owner": is_owner,
+        "winning_bid": winning_bid
     })
 
+@login_required
+def listing(request, listing_id):
 
+    listing = get_object_or_404(Listing, pk=listing_id)
+
+    if not request.user.is_authenticated:
+            return HttpResponse("You must be logged in to view listing and place a bid.")
+    
+    highest_bid = listing.highest_bid
+    min_bid = highest_bid.amount if highest_bid else listing.starting_bid
+
+    if request.method == "POST":
+
+        form = BidForm(request.POST, min_bid=min_bid)
+        if form.is_valid():
+            print("Form is valid")
+            bid = form.save(commit=False)
+            bid.bidder = request.user
+            bid.listing = listing
+
+            if bid.amount <= min_bid:
+                form.add_error('amount', f'Bid must be greater than the current price (${min_bid})')
+            else:
+                bid.save()
+                print("Bid saved successfully")
+                return redirect('listing', listing_id=listing.id)
+
+    else:
+        form = BidForm(min_bid=min_bid)
+    
+    highest_bid = listing.highest_bid
+    user_is_highest_bidder = (
+        request.user.is_authenticated and
+        highest_bid and
+        highest_bid.bidder == request.user
+    )
+
+    is_watching = False
+    if request.user.is_authenticated:
+        is_watching = Watchlist.objects.filter(user=request.user, listing=listing).exists()
+
+    is_owner = False
+    if request.user == listing.owner:
+        is_owner = True
+
+    winning_bid = listing.bids.order_by('-amount').first()
+
+    return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "form": form,
+        "user_is_highest_bidder": user_is_highest_bidder,
+        "is_watching": is_watching,
+        "is_owner": is_owner,
+        "winning_bid": winning_bid
+    })
+
+@login_required
+def toggle_watchlist(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    watch_entry, created = Watchlist.objects.get_or_create(user=request.user, listing=listing)
+
+    if not created:
+        watch_entry.delete()
+    else:
+        messages.success(request, "Added to your watchlist.")
+
+    return redirect("listing", listing_id=listing.id)
+
+@login_required
 def watchlist(request):
-    # Placeholder for watchlist view logic
-    return render(request, "auctions/watchlist.html")
+    listings = Listing.objects.filter(watchlist__user=request.user)
+    return render(request, "auctions/watchlist.html", {"listings": listings})
+
 
 def categories(request):
     categories = Category.objects.all()
@@ -104,11 +199,22 @@ def category(request, name):
         "listings": listings
     })
 
+
 def close_listing(request, listing_id):
-    # Placeholder for closing a listing logic
-    return render(request, "auctions/close_listing.html", {
-        "listing_id": listing_id
-    })
+    if request.method == "POST":
+        listing = get_object_or_404(Listing, pk=listing_id)
+        if request.user == listing.owner:
+            listing.is_active = False
+            listing.save()
+
+            # Get the winning bid
+            winning_bid = listing.bids.order_by('-amount').first()
+
+            # Optional: pass context if redirecting
+            return redirect('listing', listing_id=listing.id)
+
+    return redirect('index')
+
 
 def add_bid(request, listing_id):
     # Placeholder for adding a bid logic

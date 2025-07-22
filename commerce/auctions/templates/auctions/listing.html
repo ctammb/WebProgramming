@@ -16,35 +16,78 @@
 
         <div class="listing-text">
             <p>{{ listing.description }}</p>
-            <p style="font-weight: bold;"">Current Price: ${{ listing.current_price }}</p>
+            <p style="font-weight: bold;">Current Price: ${{ listing.current_price }}</p>
             <hr>
             <p>Total bids: {{ listing.number_of_bids }}</p>
-            {% if user_is_highest_bidder %}
-                <p style="color: green;">You currently have the highest bid!</p>
-            {% endif %}
-
-            <h4>Place a Bid</h4>
-            <form method="post" action="{% url 'listing' listing.id %}">
-                {% csrf_token %}
-                <div class="form-row align-items-center mb-3" style="gap: 10px;">
-                    <label for="{{ form.amount.id_for_label }}" class="col-form-label me-2">
-                        {{ form.amount.label }}
-                    </label>
-                    <div>
-                        {{ form.amount|add_class:"form-control form-control-sm" }}
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary btn-sm">Submit Bid</button>
-                    </div>
-                </div>
-
-                {% if form.amount.errors %}
-                    <div class="text-danger small mt-2">
-                        {{ form.amount.errors }}
-                    </div>
+            {% if user.is_authenticated %}
+                {% if user_is_highest_bidder %}
+                    <p style="color: green;">You currently have the highest bid!</p>
                 {% endif %}
-            </form>
+
+                <h4>Place a Bid</h4>
+                <form method="post" action="{% url 'listing' listing.id %}">
+                    {% csrf_token %}
+                    <div class="form-row align-items-center mb-3" style="gap: 10px;">
+                        <label for="{{ form.amount.id_for_label }}" class="col-form-label me-2">
+                            {{ form.amount.label }}
+                        </label>
+                        <div>
+                            {{ form.amount|add_class:"form-control form-control-sm" }}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm">Submit Bid</button>
+                        </div>
+                    </div>
+
+                    {% if form.amount.errors %}
+                        <div class="text-danger small mt-2">
+                            {{ form.amount.errors }}
+                        </div>
+                    {% endif %}
+                </form>
+
+            {% endif %}
             <br>
+        {% if user.is_authenticated %}
+            <form action="{% url 'toggle_watchlist' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm">
+                    {% if is_watching %}
+                        Remove from Watchlist
+                    {% else %}
+                        Add to Watchlist
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
+
+        {% if is_owner and listing.is_active %}
+            <form action="{% url 'close_listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Close Listing</button>
+            </form>
+        {% endif %}
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-info">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not listing.is_active %}
+            <div class="alert alert-info">
+                <strong>This listing is closed.</strong><br>
+                {% if winning_bid %}
+                    Winning Bid: ${{ winning_bid.amount }}<br>
+                    Winner: {{ winning_bid.bidder.username }}
+                {% else %}
+                    No bids were placed.
+                {% endif %}
+            </div>
+        {% endif %}
+        <br>
             <a href="{% url 'index' %}">Back</a>
         </div>
 

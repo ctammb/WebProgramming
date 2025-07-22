@@ -19,6 +19,7 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -67,10 +68,3 @@ class Meta:
     def __str__(self):
         return f"{self.user.username} watching {self.listing.title}"
 
-
-class AuctionClosed(models.Model):
-    listing = models.OneToOneField(Listing, on_delete=models.CASCADE, related_name="closed_auction")
-    closed_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Auction for {self.listing.title} closed at {self.closed_at}"
