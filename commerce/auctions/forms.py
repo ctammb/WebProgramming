@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing, Bid, Category
+from .models import Listing, Bid, Category, Comment
 
 class ListingForm(forms.ModelForm):
     class Meta:
@@ -31,3 +31,12 @@ class BidForm(forms.ModelForm):
                 'step': '0.01',
                 'placeholder': f'Min bid: ${min_bid}'
             })
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+ 

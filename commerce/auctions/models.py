@@ -47,8 +47,6 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.bidder.username} - {self.amount} on {self.listing.title}"
 
-
-
 class Comment(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")

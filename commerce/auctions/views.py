@@ -4,9 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .forms import ListingForm, BidForm
+from .forms import ListingForm, BidForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from .models import User, Listing, Bid, Category, Watchlist
+from .models import User, Listing, Bid, Category, Watchlist, Comment
 from django.contrib import messages
 
 
@@ -101,6 +101,8 @@ def listing(request, listing_id):
     if request.user == listing.owner:
         is_owner = True
 
+    comments = listing.comments.all()
+                                 
     is_winner = False
     if (highest_bid and not listing.is_active):
         winning_bid = highest_bid
@@ -114,7 +116,8 @@ def listing(request, listing_id):
             "is_watching": is_watching,
             "is_owner": is_owner,
             "is_winner": is_winner,
-            "winning_bid": winning_bid
+            "winning_bid": winning_bid,
+            "comments": comments
         })
     else:
         return render(request, "auctions/listing.html", {
@@ -123,7 +126,8 @@ def listing(request, listing_id):
             "user_is_highest_bidder": user_is_highest_bidder,
             "is_watching": is_watching,
             "is_owner": is_owner,
-            "is_winner": is_winner
+            "is_winner": is_winner,
+            "comments": comments
         })
 
 @login_required
@@ -168,17 +172,44 @@ def close_listing(request, listing_id):
     return redirect('index')
 
 
-def add_bid(request, listing_id):
-    # Placeholder for adding a bid logic
-    return render(request, "auctions/add_bid.html", {
-        "listing_id": listing_id
-    })
-
+@login_required
 def add_comment(request, listing_id):
-    # Placeholder for adding a comment logic
-    return render(request, "auctions/add_comment.html", {
-        "listing_id": listing_id
-    })
+        
+    if not request.user.is_authenticated:
+            return HttpResponse("You must be logged in to add a comment.")
+    listing = get_object_or_404(Listing, pk=listing_id)
+    
+    if request.method == "POST":
+
+        # Extract form data
+
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            print("Form is valid")
+            comment = form.save(commit=False)
+            comment.user = request.user  
+            comment.listing = listing
+            try:
+                comment.save()
+                print("Comment saved successfully")
+            except Exception as e:
+                print(f"Error saving comment: {e}")
+            return redirect('listing', listing_id=listing.id)
+
+        else:
+            print("Form is invalid")
+            form = CommentForm()
+            return render(request, "auctions/add_comment.html", {
+                "form": form,
+                "listing": listing
+                })
+
+    else:
+        form = CommentForm()
+        return render(request, "auctions/add_comment.html", {
+                "form": form,
+                "listing": listing
+          })
 
 def login_view(request):
     if request.method == "POST":

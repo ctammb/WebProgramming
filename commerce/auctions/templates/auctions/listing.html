@@ -74,6 +74,19 @@
                 </div>
             {% endif %}
 
+            <form action="{% url 'add_comment' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+                        
+            {% if comments %}
+                {% for comment in comments %}
+                <p>{{ comment.user }}</p>
+                <p>{{ comment.created_at }}</p>
+                <p>{{ comment.content }}</p>
+                {% endfor %}
+            {% endif %}
+
         {% else %}
         <div class="listing-box"> 
             <div class="listing-image">
@@ -104,6 +117,7 @@
             {% endif %}
         </div>
         </div>
+        
         {% endif %}
         <br>
             <a href="{% url 'index' %}">Back</a>
