@@ -87,7 +87,6 @@ def listing(request, listing_id):
     else:
         form = BidForm(min_bid=min_bid)
     
-    highest_bid = listing.highest_bid
     user_is_highest_bidder = (
         request.user.is_authenticated and
         highest_bid and
@@ -102,72 +101,30 @@ def listing(request, listing_id):
     if request.user == listing.owner:
         is_owner = True
 
-    winning_bid = listing.bids.order_by('-amount').first()
+    is_winner = False
+    if (highest_bid and not listing.is_active):
+        winning_bid = highest_bid
+        if (highest_bid and request.user == winning_bid.bidder):
+            is_winner = True
 
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "form": form,
-        "user_is_highest_bidder": user_is_highest_bidder,
-        "is_watching": is_watching,
-        "is_owner": is_owner,
-        "winning_bid": winning_bid
-    })
-
-@login_required
-def listing(request, listing_id):
-
-    listing = get_object_or_404(Listing, pk=listing_id)
-
-    if not request.user.is_authenticated:
-            return HttpResponse("You must be logged in to view listing and place a bid.")
-    
-    highest_bid = listing.highest_bid
-    min_bid = highest_bid.amount if highest_bid else listing.starting_bid
-
-    if request.method == "POST":
-
-        form = BidForm(request.POST, min_bid=min_bid)
-        if form.is_valid():
-            print("Form is valid")
-            bid = form.save(commit=False)
-            bid.bidder = request.user
-            bid.listing = listing
-
-            if bid.amount <= min_bid:
-                form.add_error('amount', f'Bid must be greater than the current price (${min_bid})')
-            else:
-                bid.save()
-                print("Bid saved successfully")
-                return redirect('listing', listing_id=listing.id)
-
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "form": form,
+            "user_is_highest_bidder": user_is_highest_bidder,
+            "is_watching": is_watching,
+            "is_owner": is_owner,
+            "is_winner": is_winner,
+            "winning_bid": winning_bid
+        })
     else:
-        form = BidForm(min_bid=min_bid)
-    
-    highest_bid = listing.highest_bid
-    user_is_highest_bidder = (
-        request.user.is_authenticated and
-        highest_bid and
-        highest_bid.bidder == request.user
-    )
-
-    is_watching = False
-    if request.user.is_authenticated:
-        is_watching = Watchlist.objects.filter(user=request.user, listing=listing).exists()
-
-    is_owner = False
-    if request.user == listing.owner:
-        is_owner = True
-
-    winning_bid = listing.bids.order_by('-amount').first()
-
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "form": form,
-        "user_is_highest_bidder": user_is_highest_bidder,
-        "is_watching": is_watching,
-        "is_owner": is_owner,
-        "winning_bid": winning_bid
-    })
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "form": form,
+            "user_is_highest_bidder": user_is_highest_bidder,
+            "is_watching": is_watching,
+            "is_owner": is_owner,
+            "is_winner": is_winner
+        })
 
 @login_required
 def toggle_watchlist(request, listing_id):
@@ -206,11 +163,6 @@ def close_listing(request, listing_id):
         if request.user == listing.owner:
             listing.is_active = False
             listing.save()
-
-            # Get the winning bid
-            winning_bid = listing.bids.order_by('-amount').first()
-
-            # Optional: pass context if redirecting
             return redirect('listing', listing_id=listing.id)
 
     return redirect('index')
