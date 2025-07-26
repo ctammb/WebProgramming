@@ -2,15 +2,36 @@ body {
     padding: 20px;
     }
 
-    .bid {
-        background-color:#f0f0f0;
-        padding: 10px;
+.bid {
+    background-color:#f0f0f0;
+    padding: 10px;
     }
 .center-box {
     width: auto;
     background-color: #f0f0f0;
     text-align: center;
 }
+
+.comment-box {
+    margin: 10px;
+}
+
+.comment-box p {
+    font-size: 0.85rem; 
+    margin: 0;  
+    padding: 0; 
+    line-height: 1.3; 
+}
+
+.comment-details {
+    color: #666;  
+    font-style: italic; 
+}
+
+.comment-text {
+    margin-top: 4px;  
+}
+
 
 .listing-content {
     background-color: #f0f0f0;

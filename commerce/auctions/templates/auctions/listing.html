@@ -35,7 +35,7 @@
             <form method="post" action="{% url 'listing' listing.id %}" class="d-flex align-items-center gap-3 mb-3">
                 {% csrf_token %}
                 {{ form.amount|add_class:"form-control form-control-sm w-auto" }}
-                <button type="submit" class="btn btn-outline-success">Place Bid</button>
+                <button type="submit" class="btn btn-secondary btn-sm">Place Bid</button>
 
                 {% if form.amount.errors %}
                     <div class="text-danger small mt-2">
@@ -47,7 +47,7 @@
                     <div class="d-flex flex-wrap gap-1 align-items-center">  
                         <form action="{% url 'toggle_watchlist' listing.id %}" method="post" class="d-flex flex-wrap align-items-center gap-3">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-primary">
+                            <button type="submit" class="btn btn-success btn-sm">
                                 {% if is_watching %}
                                     Remove from Watchlist
                                 {% else %}
@@ -60,7 +60,7 @@
                     {% if is_owner %}
                         <form action="{% url 'close_listing' listing.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Close Listing</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Close Listing</button>
                         </form>
                     {% endif %}
 
@@ -76,14 +76,17 @@
 
             <form action="{% url 'add_comment' listing.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Add Comment</button>
+                <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
             </form>
-                        
+            <br>           
             {% if comments %}
+            <strong>Comments</strong>
                 {% for comment in comments %}
-                <p>{{ comment.user }}</p>
-                <p>{{ comment.created_at }}</p>
-                <p>{{ comment.content }}</p>
+                    <div class="comment-box">
+                        <p class="comment-details">{{ comment.user }} - {{ comment.created_at }}</p>
+
+                        <p class="comment-text">{{ comment.content }}</p>
+                    </div>
                 {% endfor %}
             {% endif %}
 
