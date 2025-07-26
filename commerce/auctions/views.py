@@ -24,10 +24,11 @@ def closed_listings(request):
         "view_title": "Closed Listings"
     })
 
-@login_required
 def create(request):
     if not request.user.is_authenticated:
-            return HttpResponse("You must be logged in to create a listing.")
+            return HttpResponse(
+                '<p style="margin-top: 2em; font-weight: bold; color: red;">You must be logged in to create a listing.</p>'
+            )
     
     if request.method == "POST":
 
@@ -57,13 +58,14 @@ def create(request):
         return render(request, "auctions/create.html", {
             "form": form})
 
-@login_required
 def listing(request, listing_id):
 
     listing = get_object_or_404(Listing, pk=listing_id)
 
     if not request.user.is_authenticated:
-            return HttpResponse("You must be logged in to view listing and place a bid.")
+            return HttpResponse(
+                '<p style="margin-top: 2em; font-weight: bold; color: red;">You must be logged in to view a listing or place a bid</p>'
+                )
     
     highest_bid = listing.highest_bid
     min_bid = highest_bid.amount if highest_bid else listing.starting_bid
@@ -76,14 +78,9 @@ def listing(request, listing_id):
             bid = form.save(commit=False)
             bid.bidder = request.user
             bid.listing = listing
-
-            if bid.amount <= min_bid:
-                form.add_error('amount', f'Bid must be greater than the current price (${min_bid})')
-            else:
-                bid.save()
-                print("Bid saved successfully")
-                return redirect('listing', listing_id=listing.id)
-
+            bid.save()
+            print("Bid saved successfully")
+            return redirect('listing', listing_id=listing.id)
     else:
         form = BidForm(min_bid=min_bid)
     
@@ -130,8 +127,11 @@ def listing(request, listing_id):
             "comments": comments
         })
 
-@login_required
 def toggle_watchlist(request, listing_id):
+    if not request.user.is_authenticated:
+        return HttpResponse(
+            '<p style="margin-top: 2em; font-weight: bold; color: red;">You must be logged in to use the Watchlist</p>'
+            )
     listing = get_object_or_404(Listing, pk=listing_id)
     watch_entry, created = Watchlist.objects.get_or_create(user=request.user, listing=listing)
 
@@ -142,8 +142,12 @@ def toggle_watchlist(request, listing_id):
 
     return redirect("listing", listing_id=listing.id)
 
-@login_required
+
 def watchlist(request):
+    if not request.user.is_authenticated:
+        return HttpResponse(
+            '<p style="margin-top: 2em; font-weight: bold; color: red;">You must be logged in to use the Watchlist</p>'
+        )
     listings = Listing.objects.filter(watchlist__user=request.user)
     return render(request, "auctions/watchlist.html", {"listings": listings})
 
@@ -162,6 +166,10 @@ def category(request, name):
 
 
 def close_listing(request, listing_id):
+    if not request.user.is_authenticated:
+        return HttpResponse(
+            '<p style="margin-top: 2em; font-weight: bold; color: red;">You must be logged in to close a listing.</p>'
+            )
     if request.method == "POST":
         listing = get_object_or_404(Listing, pk=listing_id)
         if request.user == listing.owner:
@@ -171,8 +179,6 @@ def close_listing(request, listing_id):
 
     return redirect('index')
 
-
-@login_required
 def add_comment(request, listing_id):
         
     if not request.user.is_authenticated:

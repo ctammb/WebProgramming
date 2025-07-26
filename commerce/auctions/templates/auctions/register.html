@@ -1,7 +1,8 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
     <h2>Register</h2>
 
     {% if message %}
@@ -27,4 +28,6 @@
 
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>
 
+    </div>
+</div>
 {% endblock %}

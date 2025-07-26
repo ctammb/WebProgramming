@@ -32,40 +32,37 @@
 
             <h4>Place a Bid</h4>
 
-            <form method="post" action="{% url 'listing' listing.id %}" class="d-flex align-items-center gap-3 mb-3">
+            <form method="post" action="{% url 'listing' listing.id %}" class=""d-inline">
                 {% csrf_token %}
-                {{ form.amount|add_class:"form-control form-control-sm w-auto" }}
+                {{ form.amount }}
                 <button type="submit" class="btn btn-secondary btn-sm">Place Bid</button>
-
                 {% if form.amount.errors %}
                     <div class="text-danger small mt-2">
                         {{ form.amount.errors }}
                     </div>
                 {% endif %}
             </form>
-
-                    <div class="d-flex flex-wrap gap-1 align-items-center">  
-                        <form action="{% url 'toggle_watchlist' listing.id %}" method="post" class="d-flex flex-wrap align-items-center gap-3">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm">
-                                {% if is_watching %}
-                                    Remove from Watchlist
-                                {% else %}
-                                    Add to Watchlist
-                                {% endif %}
-                            </button>
-                        </form>
-                    </div> 
-                        <br>
-                    {% if is_owner %}
-                        <form action="{% url 'close_listing' listing.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Close Listing</button>
-                        </form>
+              
+            <form action="{% url 'toggle_watchlist' listing.id %}" method="post" class="d-inline gap-3">
+                {% csrf_token %}
+                <button type="submit" class="btn-oval-green">
+                    {% if is_watching %}
+                        Remove from Watchlist
+                    {% else %}
+                        Add to Watchlist
                     {% endif %}
+                </button>
+            </form>
+           
+            {% if is_owner %}
+                <form action="{% url 'close_listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-oval-red">Close Listing</button>
+                </form>
+            {% endif %}
 
-                {% endif %}
-
+        {% endif %}
+            <br>
             {% if messages %}
                 <div class="messages">
                     {% for message in messages %}

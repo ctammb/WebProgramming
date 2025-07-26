@@ -1,5 +1,6 @@
 from django import forms
 from .models import Listing, Bid, Category, Comment
+from django.core.exceptions import ValidationError
 
 class ListingForm(forms.ModelForm):
     class Meta:
@@ -17,21 +18,26 @@ class ListingForm(forms.ModelForm):
         self.fields['category'].queryset = Category.objects.all()
         self.fields['category'].empty_label = "Select a Category"
 
-
 class BidForm(forms.ModelForm):
     class Meta:
         model = Bid
         fields = ['amount']
+
     def __init__(self, *args, **kwargs):
-        min_bid = kwargs.pop('min_bid', None)
+        self.min_bid = kwargs.pop('min_bid', None)  # receive from view
         super().__init__(*args, **kwargs)
-        if min_bid:
+        if self.min_bid is not None:
             self.fields['amount'].widget = forms.NumberInput(attrs={
-                'min': f"{min_bid}",
                 'step': '0.01',
-                'placeholder': f'Min bid: ${min_bid}'
+                'placeholder': f'Min bid: ${self.min_bid:.2f}'
             })
 
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if self.min_bid is not None and amount <= self.min_bid:
+            raise ValidationError(f"Bid must be greater than ${self.min_bid:.2f}")
+        return amount
+ 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
