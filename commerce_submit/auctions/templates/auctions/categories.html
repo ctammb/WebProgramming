@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2>Categories</h2>
+
+        {% load static %}    
+
+        {% if categories %}
+        <ull>
+        {% for category in categories %}  
+            <li><a href="{% url 'category' category.name %}">{{ category.name }}</a></li>
+        {% endfor %}
+        </ul>
+
+        {% else %}
+            <p>No defined categories available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

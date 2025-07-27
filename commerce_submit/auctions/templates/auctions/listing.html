@@ -1,0 +1,128 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2>Listing: {{ listing.title }}</h2>
+        <p>Category: {{ listing.category }}</p>
+
+        {% load static %}
+        {% load form_filters %}    
+        {% if listing.is_active %}
+
+        <div class="listing-box">
+            <div class="listing-image">
+                <img src="{% static listing.image_url %}" alt="Listing Image"
+                    style="max-width: 300px; max-height: 300px; display: block; margin: 0 auto;">
+            </div>
+
+            <div class="listing-text">
+                <p>{{ listing.description }}</p>
+                <p style="font-weight: bold;">Current Price: ${{ listing.current_price }}</p>
+                <hr>
+            </div>
+        </div>
+        <br>
+        <p>Total bids: {{ listing.number_of_bids }}</p>
+
+        {% if user.is_authenticated %}
+            {% if user_is_highest_bidder %}
+                <p style="color: green;">You currently have the highest bid!</p>
+            {% endif %}
+
+            <h4>Place a Bid</h4>
+
+            <form method="post" action="{% url 'listing' listing.id %}" class=""d-inline">
+                {% csrf_token %}
+                {{ form.amount }}
+                <button type="submit" class="btn btn-secondary btn-sm">Place Bid</button>
+                {% if form.amount.errors %}
+                    <div class="text-danger small mt-2">
+                        {{ form.amount.errors }}
+                    </div>
+                {% endif %}
+            </form>
+              
+            <form action="{% url 'toggle_watchlist' listing.id %}" method="post" class="d-inline gap-3">
+                {% csrf_token %}
+                <button type="submit" class="btn-oval-green">
+                    {% if is_watching %}
+                        Remove from Watchlist
+                    {% else %}
+                        Add to Watchlist
+                    {% endif %}
+                </button>
+            </form>
+           
+            {% if is_owner %}
+                <form action="{% url 'close_listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-oval-red">Close Listing</button>
+                </form>
+            {% endif %}
+
+        {% endif %}
+            <br>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form action="{% url 'add_comment' listing.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+            </form>
+            <br>           
+            {% if comments %}
+            <strong>Comments</strong>
+                {% for comment in comments %}
+                    <div class="comment-box">
+                        <p class="comment-details">{{ comment.user }} - {{ comment.created_at }}</p>
+
+                        <p class="comment-text">{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        {% else %}
+        <div class="listing-box"> 
+            <div class="listing-image">
+                <img src="{% static listing.image_url %}" alt="Listing Image"
+                    style="max-width: 300px; max-height: 300px; display: block; margin: 0 auto;">
+            </div>
+
+            <div class="listing-text">
+                <p>{{ listing.description }}</p>
+                <p style="font-weight: bold;">Final Price: ${{ listing.current_price }}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="alert alert-info">
+            <strong>This listing is closed.</strong><br>
+            {% if winning_bid %}
+                {% if is_winner %}
+                    <p>You are the winner!</p>
+                {% endif %}
+                {% if is_owner %}
+                    Winning Bid: ${{ winning_bid.amount }}<br>
+                    Winner: {{ winning_bid.bidder.username }}
+                {% endif %}
+            {% else %}
+                {% if is_owner %}
+                    No bids were placed.
+                {% endif %}
+            {% endif %}
+        </div>
+        </div>
+        
+        {% endif %}
+        <br>
+            <a href="{% url 'index' %}">Back</a>
+
+    </div>
+</div>
+
+{% endblock %}

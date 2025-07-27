@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Add Comment</h2>
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow p-4">
+        <h2>Add a comment for {{ listing.title }}</h2>
+        {% load static %}
+        
+        <form method="post" action="{% url 'add_comment' listing.id %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+                {{ form.content.errors }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Add comment</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

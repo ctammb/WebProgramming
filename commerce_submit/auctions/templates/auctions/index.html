@@ -1,0 +1,34 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-5" style="max-width: 600px">
+    <div class="card shadow p-4">
+        <h2>{{ view_title }}</h2>
+
+        {% load static %} 
+        {% if listings %} 
+
+            {% for listing in listings %}
+                <div class="listing-box">
+                    <div class="listing-image">
+                        <img src="{% static listing.image_url %}" alt="Image for {{ listing.title }}">
+                    </div>
+                    <div class="listing-text">
+                        <a href="{% url 'listing' listing.id %}"><h3>{{ listing.title }}</h3></a>
+                        <p>{{ listing.description }}</p>
+                        <p><strong>Current Price: ${{ listing.current_price }}</strong></p>
+                        <p style="font-size: smaller">Created: {{ listing.created_at}}</p>
+                        {% if not listing.is_active %}
+                            <p style="color:red">This listing is Closed</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+ 
+        {% else %}
+            <p>No active listings available.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
