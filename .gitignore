@@ -1,10 +1,14 @@
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 
 .venv/
 env/
 venv/
+ENV/
+*.egg-info/
+.Python
 
 .winvenv/
 winvenv/
@@ -14,6 +18,12 @@ node_modules/
 
 .vscode/
 
-db.sqlite3
+# *.sqlite3 - keep for CS50
 
 *.log
+# System/Editor files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
