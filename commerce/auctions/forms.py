@@ -24,7 +24,7 @@ class BidForm(forms.ModelForm):
         fields = ['amount']
 
     def __init__(self, *args, **kwargs):
-        self.min_bid = kwargs.pop('min_bid', None)  # receive from view
+        self.min_bid = kwargs.pop('min_bid', None) 
         super().__init__(*args, **kwargs)
         if self.min_bid is not None:
             self.fields['amount'].widget = forms.NumberInput(attrs={
